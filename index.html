@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	 <meta charset="utf-8">
+	 <title>Pedro's QCD</title>
+	 <script type="text/javascript">
+
+	 var indice;
+	 var curseur=0;
+	 var score=0;
+	 var nbquestion ;
+
+	 //https://developer.mozilla.org/en-US/docs/Web/Guide/AJAX/Getting_Started
+
+	 //instance of the Web API XMLHttpRequest
+	 //https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest
+	 //constructor : https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/XMLHttpRequest
+
+	 var xhr=new XMLHttpRequest();
+
+
+	 //*********************
+	 function lectureAJAX(){
+
+	 //is XMLHttpRequest supported by your browser?
+	 if(!xhr){
+	 	alert("Pas de support AJAJ du navigateur!");
+	 	return;
+	 }
+
+	 //php script, server side
+	 var lURL="qcd.php";
+
+	 //check for any answer of the web server https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/onreadystatechange
+	 xhr.onreadystatechange=suiviAJAJ;
+
+
+	 //Initializes a request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/open
+	 xhr.open('GET',lURL);
+
+	 //Sends the request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/send
+	 xhr.send();
+
+
+	 }//fin lectureAJAX
+
+
+	 //*********************
+	 function suiviAJAJ(){
+	 //return state of the request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/readyState
+	 //waiting for DONE: if
+	 if(xhr.readyState==XMLHttpRequest.DONE){
+
+
+	 //response string of the request https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseText
+	 //JSON parse
+	 data=JSON.parse(xhr.responseText);
+	 //dynamicWriting
+	 nbquestion=data.length;
+	 startGame();
+	 }//fin if
+
+	 }//fin func
+
+	 function startGame(){
+		 var curseur = 0;
+		 dynamicWriting(curseur);
+		 playQuestion(curseur);
+		 document.getElementById("myscore").innerHTML=0;
+	 }
+
+	 //*********************
+	 function dynamicWriting(indice){
+
+	 	document.getElementById("nbquestion").innerHTML= indice;
+	 	document.getElementById("enonce").innerHTML=data[indice].Q;
+	 }//fin func
+	 //*******************
+	 //*********************
+	function playQuestion(curseur){
+
+		if (curseur < nbquestion){
+			dynamicWriting(curseur);
+			document.getElementById("nbquestion").innerHTML=curseur;
+		} else {
+			alert("Fin de la partie");
+		}
+	}
+
+	function checkQuestion(){
+		var radioButtons = document.getElementsByName("vraifaux");
+    for(var i = 0; i < radioButtons.length; i++)
+    {
+        if(radioButtons[i].checked == true)
+        {
+            console.log(radioButtons[i].value);
+						if (radioButtons[i].value==data[curseur].R){
+							score = score + 1;
+							document.getElementById("myscore").innerHTML=score;
+						}
+						document.getElementById("reponse").innerHTML=data[curseur].R+ ":    "+data[curseur].J ;
+        }
+
+				radioButtons[i].checked = false;
+    }
+
+		setTimeout(() => {}, 4000);
+		setTimeout(() => {curseur = curseur + 1; document.getElementById("reponse").innerHTML="";  playQuestion(curseur);}, 500);
+
+
+	}//fin func
+	//*******************
+</script>
+
+<style>
+
+@media screen and (max-width: 1000px){
+body {
+	font-family: "Times";
+	font-size: 1.5em;
+	width: 100vw ;
+	height: 100vh;
+}
+
+main {
+	box-sizing: border-box;
+	padding: 2%;
+	display: grid;
+	width: 90vw ;
+	height: 90vh;
+
+	margin-right:auto;
+	margin-left: auto;
+	grid-template-rows: minmax(7vh, 10vh) minmax(14vh,auto)  minmax(7vh, 15vh) minmax(7vh, 10vh) minmax(7vh, 10vh);
+	grid-gap: 15px;
+}
+#item1 {
+	grid-row: 1 ;
+	background-color: rgba( 93,188, 210) ;
+	border: 5px solid black;
+	border-radius: 5px;
+}
+#item2 {
+	grid-row: 3 ;
+	background-color: rgba(255, 74, 198);
+	border: 1px solid black;
+	border-radius: 5px;
+	text-align: center;
+}
+#item3 {
+	grid-row: 2;
+	background-color: rgba(135, 255, 146);
+	border: 3px solid black;
+	border-radius: 5px;
+}
+#item4 {
+	grid-row: 4 ;
+	background-color: rgba(255, 74, 198);
+	border: 1px solid black;
+	border-radius: 5px;
+}
+#item5 {
+	grid-row: 5;
+	background-color: rgba( 93,188, 210) ;
+	border: 6px solid black;
+	border-radius: 5px;
+}
+}
+
+@media screen and (min-width:1000px){
+body {
+	font-family: "Times";
+	font-size: 1.5em;
+	width: 100vw ;
+	height: 100vh;
+}
+
+main {
+	box-sizing: border-box;
+	padding: 2%;
+	display: grid;
+	width: 90vw ;
+	height: 90vh;
+
+	margin-right:auto;
+	margin-left: auto;
+	grid-template-columns: minmax(200px, 5vw) auto minmax(200px, 5vw);
+	grid-template-rows: minmax(15px, 10vh) auto minmax(15px, 10vh);
+	grid-gap: 15px;
+}
+#item1 {
+	grid-column : 1/4;
+	grid-row: 1 ;
+	background-color: rgba( 93,188, 210) ;
+	border: 5px solid black;
+	border-radius: 5px;
+}
+#item2 {
+	grid-column : 1;
+	grid-row: 2 ;
+	background-color: rgba(255, 74, 198);
+	border: 1px solid black;
+	border-radius: 5px;
+	text-align: center;
+
+}
+#item3 {
+	grid-column : 2;
+	grid-row: 2;
+	background-color: rgba(135, 255, 146);
+	border: 15px solid black;
+	border-radius: 5px;
+}
+#item4 {
+	grid-column : 3;
+	grid-row: 2 ;
+	background-color: rgba(255, 74, 198);
+	border: 1px solid black;
+	border-radius: 5px;
+}
+#item5 {
+	grid-column : 1/4;
+	grid-row: 3;
+	background-color: rgba( 93,188, 210) ;
+	border: 6px solid black;
+	border-radius: 5px;
+}
+}
+</style>
+</head>
+
+<body>
+	<main >
+  <header id="item1">
+		<br />
+		<div style="text-align: center;"> Pedro s QCD </div>
+	</header>
+	<article id="item2">
+		<div style="text-align: center;">
+				<button type="button" onclick="javascript:lectureAJAX()" style:"display: table-cell"> START GAME </button>
+
+				<form method='post'  name="myform">
+    		<fieldset name="myfieldset">
+    		<legend> Game </legend>
+					<input type="radio" name="vraifaux" value="vrai">Vrai<br>
+					<input type="radio" name="vraifaux" value="faux">Faux<br>
+    		</fieldset>
+      	<br />
+      	<button type="button" class="mybutton" onclick="javascript:checkQuestion()">Envoyer </button>
+  			</form>
+			</div>
+
+	</article>
+  <article id="item3" >
+		<div style="text-align: center;">
+		<p>Question #
+			<span id="nbquestion"></span>:<br />
+			<span id="enonce"></span>
+		</p>
+		</div>
+	</article>
+	<aside id="item4">
+		<div style="text-align: center;">
+			<p>Score:
+ 		 		<span id="myscore"></span>
+ 	 		</p>
+	 </div>
+	</aside>
+	<footer id="item5">
+		<div style="text-align: center;"> <span id="reponse"></span> </div>
+	</footer>
+</main>
+</body>
+</html>
